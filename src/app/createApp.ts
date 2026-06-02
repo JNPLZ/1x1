@@ -74,7 +74,8 @@ class MultiplicationApp {
             <p class="${styles.eyebrow}">Einmaleins-Raumschiff</p>
             <h1 id="start-title" class="${styles.title}">Welches Raumschiff fliegt heute?</h1>
             <p class="${styles.intro}">
-              Wähle eine Reihe aus. Danach kommen 20 Aufgaben mit Meteoriten-Antworten.
+              Rette das Raumschiff vor den Meteoriten. Wähle eine Reihe aus.
+              Danach kommen 20 Aufgaben mit Meteoriten-Antworten.
             </p>
           </div>
           <div class="${styles.startScene}" aria-hidden="true">
@@ -191,6 +192,7 @@ class MultiplicationApp {
 
     this.root.querySelectorAll<HTMLButtonElement>('[data-answer]').forEach((button) => {
       button.addEventListener('click', () => {
+        button.blur();
         this.answer(Number(button.dataset.answer));
       });
     });

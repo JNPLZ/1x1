@@ -135,6 +135,8 @@
   position: relative;
   z-index: 1;
   margin-top: 18%;
+  color: #6dd6c4;
+  text-shadow: 0 0.12rem 0.1rem rgba(23, 32, 51, 0.35);
 }
 
 .startShip::after {
@@ -522,7 +524,7 @@
   z-index: 2;
   display: grid;
   place-items: center;
-  width: clamp(3.35rem, 14vw, 5.2rem);
+  width: clamp(2.8rem, 13vw, 5.2rem);
   aspect-ratio: 1;
   border: 0.18rem solid #5f6875;
   border-radius: 44% 56% 50% 48%;
@@ -644,8 +646,8 @@
 }
 
 .meteor2 {
-  top: 12%;
-  right: 16%;
+  top: 10%;
+  right: 18%;
   animation-delay: -0.3s;
 }
 
@@ -656,7 +658,7 @@
 }
 
 .meteor3 {
-  top: 34%;
+  top: 30%;
   right: 4%;
   animation-delay: -0.6s;
 }
@@ -668,8 +670,8 @@
 }
 
 .meteor4 {
-  right: 10%;
-  bottom: 17%;
+  right: 5%;
+  bottom: 27%;
   animation-delay: -0.9s;
 }
 
@@ -680,8 +682,8 @@
 }
 
 .meteor5 {
-  right: 33%;
-  bottom: 4%;
+  right: 24%;
+  bottom: 7%;
   animation-delay: -1.2s;
 }
 
@@ -692,8 +694,8 @@
 }
 
 .meteor6 {
-  bottom: 5%;
-  left: 23%;
+  bottom: 4%;
+  left: 43%;
   animation-delay: -1.5s;
 }
 
@@ -704,8 +706,8 @@
 }
 
 .meteor7 {
-  bottom: 23%;
-  left: 5%;
+  bottom: 7%;
+  left: 24%;
   animation-delay: -1.8s;
 }
 
@@ -716,8 +718,8 @@
 }
 
 .meteor8 {
-  top: 32%;
-  left: 3%;
+  bottom: 27%;
+  left: 5%;
   animation-delay: -2.1s;
 }
 
@@ -728,8 +730,8 @@
 }
 
 .meteor9 {
-  top: 12%;
-  left: 16%;
+  top: 30%;
+  left: 4%;
   animation-delay: -2.4s;
 }
 
@@ -740,8 +742,8 @@
 }
 
 .meteor10 {
-  top: 47%;
-  left: 11%;
+  top: 10%;
+  left: 18%;
   animation-delay: -1.1s;
 }
 
