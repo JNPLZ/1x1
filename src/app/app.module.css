@@ -35,7 +35,9 @@
 
 .startPanel {
   position: relative;
+  justify-content: flex-start;
   overflow: hidden;
+  padding-top: clamp(0.5rem, 3vh, 2rem);
 }
 
 .startPanel .eyebrow {
@@ -73,7 +75,7 @@
 
 .startScene {
   position: relative;
-  width: min(100%, 30rem);
+  width: min(100%, 36rem);
   aspect-ratio: 1.55;
   margin: 0 auto;
   border: 1px solid rgba(23, 32, 51, 0.12);
@@ -268,7 +270,9 @@
 }
 
 .gamePanel {
-  gap: 0.8rem;
+  min-height: 0;
+  justify-content: flex-start;
+  gap: 0.45rem;
 }
 
 .missionBar {
@@ -279,8 +283,8 @@
 
 .progressPanel,
 .scoreCard {
-  min-height: 4rem;
-  padding: 0.65rem;
+  min-height: 3.25rem;
+  padding: 0.48rem 0.58rem;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 8px;
   background:
@@ -305,15 +309,15 @@
 .progressText strong,
 .scoreCard strong {
   display: block;
-  margin-top: 0.2rem;
+  margin-top: 0.12rem;
   color: #ffffff;
-  font-size: 1.25rem;
+  font-size: 1.08rem;
 }
 
 .progressTrack {
   position: relative;
-  height: 1.15rem;
-  margin: 1.15rem 1.2rem 0.35rem;
+  height: 0.95rem;
+  margin: 0.82rem 1.2rem 0.2rem;
   border-radius: 999px;
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0 0.08rem, transparent 0.08rem) 0 50% / 5% 100%,
@@ -443,11 +447,11 @@
 
 .spaceField {
   position: relative;
-  width: min(100%, 42rem, calc(100svh - 15rem));
+  width: min(100%, 46rem, calc(100svh - 8.5rem));
   aspect-ratio: 1;
-  max-height: 58vh;
+  max-height: calc(100svh - 8.5rem);
   margin: 0 auto;
-  overflow: clip;
+  overflow: visible;
 }
 
 .ship {
@@ -1379,6 +1383,10 @@
     min-height: calc(100vh - 3rem);
   }
 
+  .gamePanel {
+    min-height: 0;
+  }
+
   .missionBar {
     grid-template-columns: minmax(0, 1.7fr) minmax(7rem, 0.45fr) minmax(7rem, 0.45fr);
   }
@@ -1395,8 +1403,14 @@
   .startPanel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.9fr);
-    align-content: center;
+    justify-content: center;
+    align-content: start;
     align-items: center;
+    padding-top: clamp(0.5rem, 2vh, 1.25rem);
+  }
+
+  .startScene {
+    width: min(100%, 46rem, 52vw);
   }
 
   .tableButton {
