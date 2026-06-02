@@ -220,6 +220,7 @@
 }
 
 .tableButton,
+.modeButton,
 .primaryButton,
 .secondaryButton {
   min-height: 3.5rem;
@@ -245,6 +246,43 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
+.modeSelector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.modeButton {
+  display: grid;
+  gap: 0.25rem;
+  align-content: center;
+  padding: 0.8rem;
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.modeButton span {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.modeButton small {
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.activeMode {
+  border-color: rgba(109, 214, 196, 0.76);
+  background:
+    linear-gradient(180deg, rgba(109, 214, 196, 0.24), rgba(255, 255, 255, 0.1)),
+    rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 0 0.16rem rgba(109, 214, 196, 0.18);
+}
+
 .tableButton span {
   font-size: 1.8rem;
   font-weight: 900;
@@ -258,6 +296,8 @@
 
 .tableButton:hover,
 .tableButton:focus-visible,
+.modeButton:hover,
+.modeButton:focus-visible,
 .primaryButton:hover,
 .primaryButton:focus-visible,
 .secondaryButton:hover,
@@ -457,6 +497,10 @@
   filter: drop-shadow(0 1rem 1.4rem rgba(23, 32, 51, 0.22));
 }
 
+.shipShake {
+  animation: shipShake 0.34s ease-in-out 2;
+}
+
 .shipBody {
   position: absolute;
   inset: 22% 12% 8%;
@@ -589,6 +633,48 @@
     0 0 0 0.45rem rgba(239, 68, 68, 0.24),
     0 0.7rem 1.2rem rgba(127, 29, 29, 0.22);
   animation: wrongShake 0.28s ease-in-out 2;
+}
+
+.crackedMeteor {
+  scale: 0.88;
+  opacity: 0.88;
+  filter: saturate(0.82);
+}
+
+.crackedMeteor i {
+  position: absolute;
+  z-index: 2;
+  inset: 18% 28% 18% 44%;
+  display: block;
+  width: 0.18rem;
+  content: "";
+  transform: rotate(18deg);
+  background: #384252;
+  box-shadow:
+    0.32rem 0.75rem 0 #384252,
+    -0.2rem 1.4rem 0 #384252;
+}
+
+.goneMeteor {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.explodingMeteor {
+  visibility: visible;
+  opacity: 1;
+  animation: meteorExplode 0.9s ease-out forwards;
+  border-color: #facc15;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff 0 16%, #facc15 17% 36%, #f97316 37% 58%, transparent 60%);
+  color: transparent;
+  box-shadow:
+    0 0 0 0.3rem rgba(250, 204, 21, 0.32),
+    0 0 2rem rgba(249, 115, 22, 0.5);
+}
+
+.explodingMeteor::before {
+  display: none;
 }
 
 .wrongLabel {
@@ -953,6 +1039,38 @@
   }
 }
 
+@keyframes shipShake {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(calc(-50% - 0.28rem), -50%) rotate(-2deg);
+  }
+
+  75% {
+    transform: translate(calc(-50% + 0.28rem), -50%) rotate(2deg);
+  }
+}
+
+@keyframes meteorExplode {
+  0% {
+    scale: 0.9;
+    opacity: 1;
+  }
+
+  42% {
+    scale: 1.28;
+    opacity: 1;
+  }
+
+  100% {
+    scale: 1.55;
+    opacity: 0;
+  }
+}
+
 @keyframes successPop {
   0% {
     transform: translateX(-50%) scale(0.72);
@@ -1018,6 +1136,10 @@
 
   .tableGrid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-column: 1 / -1;
+  }
+
+  .modeSelector {
     grid-column: 1 / -1;
   }
 
