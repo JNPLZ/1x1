@@ -1,7 +1,9 @@
 .shell {
   min-height: 100vh;
   min-height: 100svh;
-  padding: 1rem 1rem 2.6rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
   overflow-x: clip;
   background:
     radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.9) 0 0.08rem, transparent 0.1rem),
@@ -792,11 +794,8 @@
 }
 
 .footerText {
-  position: fixed;
-  right: 0.8rem;
-  bottom: 0.55rem;
-  left: 0.8rem;
-  z-index: 10;
+  margin: auto 0 0;
+  padding-top: 0.9rem;
   color: rgba(255, 255, 255, 0.64);
   font-size: 0.78rem;
   line-height: 1.35;
@@ -985,7 +984,7 @@
 
 @media (min-width: 42rem) {
   .shell {
-    padding: 1.5rem 1.5rem 2.6rem;
+    padding: 1.5rem;
   }
 
   .startPanel,
