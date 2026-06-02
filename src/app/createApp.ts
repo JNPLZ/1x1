@@ -80,7 +80,7 @@ class MultiplicationApp {
           <div class="${styles.startScene}" aria-hidden="true">
             <div class="${styles.startPlanet}"></div>
             <div class="${styles.startShip}">
-              <span>×</span>
+              <span>?</span>
             </div>
             <i class="${styles.startMeteorOne}"></i>
             <i class="${styles.startMeteorTwo}"></i>
