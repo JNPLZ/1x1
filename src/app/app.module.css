@@ -1027,10 +1027,6 @@
 }
 
 @media (max-width: 24rem) {
-  .missionBar {
-    grid-template-columns: 1fr;
-  }
-
   .spaceField {
     max-height: none;
   }
