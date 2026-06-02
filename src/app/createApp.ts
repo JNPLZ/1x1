@@ -61,7 +61,7 @@ class MultiplicationApp {
         (table) => `
           <button class="${styles.tableButton}" type="button" data-table="${table}">
             <span>${table}</span>
-            <small>${table}er Reihe</small>
+            <small>er Reihe</small>
           </button>
         `,
       )
