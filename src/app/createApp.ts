@@ -11,14 +11,14 @@ import {
   TABLE_MIN,
   TASK_COUNT,
 } from '../features/game/gameLogic';
-import type { GameMode, GameScreen, GameSession } from '../types/game';
+import type { GameScreen, GameSession } from '../types/game';
+import { createSoundEffects } from '../utils/sound';
 import styles from './app.module.css';
 
 interface AppState {
   screen: GameScreen;
   session: GameSession | null;
   lastTable: number | null;
-  selectedMode: GameMode;
 }
 
 export function createApp(root: HTMLElement): void {
@@ -31,8 +31,8 @@ class MultiplicationApp {
     screen: 'start',
     session: null,
     lastTable: null,
-    selectedMode: 'random',
   };
+  private readonly sound = createSoundEffects();
   private rollInterval: number | null = null;
   private nextTimeout: number | null = null;
 
@@ -77,7 +77,7 @@ class MultiplicationApp {
             <h1 id="start-title" class="${styles.title}">Welches Raumschiff fliegt heute?</h1>
             <p class="${styles.intro}">
               Rette das Raumschiff vor den Meteoriten. Wähle eine Reihe aus.
-              Danach kommen 20 Aufgaben mit Meteoriten-Antworten.
+              Knacke jeden Meteoriten an und sprenge ihn beim zweiten Treffer.
             </p>
           </div>
           <div class="${styles.startScene}" aria-hidden="true">
@@ -94,40 +94,14 @@ class MultiplicationApp {
           <div class="${styles.tableGrid}" aria-label="Zahlenreihe auswählen">
             ${buttons}
           </div>
-          <div class="${styles.modeSelector}" aria-label="Spielvariante auswählen">
-            <button
-              class="${styles.modeButton} ${this.state.selectedMode === 'random' ? styles.activeMode : ''}"
-              type="button"
-              data-mode="random"
-              aria-pressed="${this.state.selectedMode === 'random'}"
-            >
-              <span>Zufall</span>
-              <small>20 gemischte Aufgaben</small>
-            </button>
-            <button
-              class="${styles.modeButton} ${this.state.selectedMode === 'explosion' ? styles.activeMode : ''}"
-              type="button"
-              data-mode="explosion"
-              aria-pressed="${this.state.selectedMode === 'explosion'}"
-            >
-              <span>Explosion</span>
-              <small>Jede Aufgabe zweimal</small>
-            </button>
-          </div>
         </section>
         ${this.renderFooter()}
       </main>
     `;
 
-    this.root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((button) => {
-      button.addEventListener('click', () => {
-        this.state.selectedMode = button.dataset.mode === 'explosion' ? 'explosion' : 'random';
-        this.render();
-      });
-    });
-
     this.root.querySelectorAll<HTMLButtonElement>('[data-table]').forEach((button) => {
       button.addEventListener('click', () => {
+        this.sound.unlock();
         const table = Number(button.dataset.table);
         this.startGame(table);
       });
@@ -140,18 +114,35 @@ class MultiplicationApp {
     const progress = session.currentIndex + 1;
     const completedTasks = session.currentIndex + (session.isLocked ? 1 : 0);
     const correctAnswer = getCorrectAnswer(session);
+    const explodingAnswerIndex =
+      session.feedbackTone === 'success' ? session.answers.indexOf(correctAnswer) : -1;
+    const explosionOverlay =
+      explodingAnswerIndex >= 0 && (session.meteorHits[correctAnswer] ?? 0) >= 2
+        ? `
+          <div class="${styles.explosionOverlay} ${styles[`explosionOrigin${explodingAnswerIndex + 1}`]}" aria-hidden="true">
+            <b class="${styles.explosionRing}"></b>
+            ${Array.from(
+              { length: 10 },
+              (_, shardIndex) =>
+                `<i class="${styles.explosionShard} ${styles[`explosionShard${shardIndex + 1}`]}"></i>`,
+            ).join('')}
+          </div>
+        `
+        : '';
     const answerButtons = session.answers
       .map((answer, index) => {
         const isCorrectAnswer = session.isLocked && answer === correctAnswer;
         const isWrongAnswer = answer === session.lastWrongAnswer;
         const meteorHits = session.meteorHits[answer] ?? 0;
-        const isCracked = session.mode === 'explosion' && meteorHits === 1;
-        const isGone = session.mode === 'explosion' && meteorHits >= 2;
+        const isCracked = meteorHits === 1;
+        const isGone = meteorHits >= 2;
         const isExploding =
-          isCorrectAnswer && session.mode === 'explosion' && session.feedbackTone === 'success' && isGone;
-        const correctClass = isCorrectAnswer ? ` ${styles.correctMeteor}` : '';
+          isCorrectAnswer && session.feedbackTone === 'success' && isGone;
+        const correctClass = isCorrectAnswer && !isExploding ? ` ${styles.correctMeteor}` : '';
         const hitClass =
-          isCorrectAnswer && session.feedbackTone === 'success' ? ` ${styles.hitMeteor}` : '';
+          isCorrectAnswer && session.feedbackTone === 'success' && !isExploding
+            ? ` ${styles.hitMeteor}`
+            : '';
         const wrongClass = isWrongAnswer ? ` ${styles.wrongMeteor}` : '';
         const crackedClass = isCracked ? ` ${styles.crackedMeteor}` : '';
         const goneClass = isGone ? ` ${styles.goneMeteor}` : '';
@@ -166,7 +157,21 @@ class MultiplicationApp {
             ${session.isRolling || session.isLocked || isGone ? 'disabled' : ''}
           >
             <span>${answer}</span>
-            ${isCracked ? '<i aria-hidden="true"></i>' : ''}
+            ${
+              isCracked
+                ? `
+                  <i class="${styles.crackLine} ${styles.crackLineOne}" aria-hidden="true"></i>
+                  <i class="${styles.crackLine} ${styles.crackLineTwo}" aria-hidden="true"></i>
+                  <i class="${styles.crackLine} ${styles.crackLineThree}" aria-hidden="true"></i>
+                  <i class="${styles.crackPiece} ${styles.crackPieceOne}" aria-hidden="true"></i>
+                  <i class="${styles.crackPiece} ${styles.crackPieceTwo}" aria-hidden="true"></i>
+                  <i class="${styles.crackPiece} ${styles.crackPieceThree}" aria-hidden="true"></i>
+                `
+                : ''
+            }
+            ${
+              isExploding ? '<i class="' + styles.explosionFlash + '" aria-hidden="true"></i>' : ''
+            }
             ${isWrongAnswer ? `<small class="${styles.wrongLabel}">Falsch</small>` : ''}
           </button>
         `;
@@ -199,6 +204,7 @@ class MultiplicationApp {
 
           <div class="${styles.spaceField}">
             ${answerButtons}
+            ${explosionOverlay}
             ${
               session.feedbackTone === 'success'
                 ? `<div class="${styles.successBanner}" aria-hidden="true">Richtig!</div>`
@@ -284,7 +290,6 @@ class MultiplicationApp {
           screen: 'start',
           session: null,
           lastTable: session.table,
-          selectedMode: session.mode,
         };
         this.render();
       },
@@ -295,9 +300,8 @@ class MultiplicationApp {
     this.clearTimers();
     this.state = {
       screen: 'game',
-      session: createSession(table, this.state.selectedMode),
+      session: createSession(table),
       lastTable: table,
-      selectedMode: this.state.selectedMode,
     };
     this.render();
   }
@@ -312,13 +316,12 @@ class MultiplicationApp {
     const correctAnswer = getCorrectAnswer(session);
 
     if (answer === correctAnswer) {
-      const points = getAvailablePoints(session.mode, session.misses);
+      const points = getAvailablePoints(session.misses);
       session.score += points;
       session.lastWrongAnswer = null;
       session.isShipShaking = false;
-      if (session.mode === 'explosion') {
-        session.meteorHits[correctAnswer] = Math.min((session.meteorHits[correctAnswer] ?? 0) + 1, 2);
-      }
+      session.meteorHits[correctAnswer] = Math.min((session.meteorHits[correctAnswer] ?? 0) + 1, 2);
+      this.sound.play(session.meteorHits[correctAnswer] === 1 ? 'crack' : 'explosion');
       session.feedback = 'Richtig!';
       session.feedbackTone = 'success';
       session.isLocked = true;
@@ -330,8 +333,10 @@ class MultiplicationApp {
     session.misses += 1;
     session.lastWrongAnswer = answer;
     session.isShipShaking = true;
+    this.sound.play('wrong');
 
-    if (getAvailablePoints(session.mode, session.misses) === 0) {
+    if (getAvailablePoints(session.misses) === 0) {
+      session.meteorHits[correctAnswer] = Math.min((session.meteorHits[correctAnswer] ?? 0) + 1, 2);
       session.feedback = `Die richtige Antwort ist ${correctAnswer}.`;
       session.feedbackTone = 'reveal';
       session.isLocked = true;
@@ -355,6 +360,7 @@ class MultiplicationApp {
 
       if (nextIndex >= session.tasks.length) {
         this.state.screen = 'result';
+        this.sound.play('win');
         this.render();
         return;
       }

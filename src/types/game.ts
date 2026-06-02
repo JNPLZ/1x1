@@ -2,14 +2,11 @@ export type GameScreen = 'start' | 'game' | 'result';
 
 export type FeedbackTone = 'neutral' | 'success' | 'error' | 'reveal';
 
-export type GameMode = 'random' | 'explosion';
-
 export interface Task {
   factor: number;
 }
 
 export interface GameSession {
-  mode: GameMode;
   table: number;
   tasks: Task[];
   answers: number[];

@@ -220,7 +220,6 @@
 }
 
 .tableButton,
-.modeButton,
 .primaryButton,
 .secondaryButton {
   min-height: 3.5rem;
@@ -244,43 +243,7 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.modeSelector {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.modeButton {
-  display: grid;
-  gap: 0.25rem;
-  align-content: center;
-  padding: 0.8rem;
-  border-color: rgba(255, 255, 255, 0.24);
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.modeButton span {
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.modeButton small {
-  font-size: 0.78rem;
-  line-height: 1.2;
-}
-
-.activeMode {
-  border-color: rgba(109, 214, 196, 0.76);
-  background:
-    linear-gradient(180deg, rgba(109, 214, 196, 0.24), rgba(255, 255, 255, 0.1)),
-    rgba(255, 255, 255, 0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    0 0 0 0.16rem rgba(109, 214, 196, 0.18);
+  touch-action: manipulation;
 }
 
 .tableButton span {
@@ -296,8 +259,6 @@
 
 .tableButton:hover,
 .tableButton:focus-visible,
-.modeButton:hover,
-.modeButton:focus-visible,
 .primaryButton:hover,
 .primaryButton:focus-visible,
 .secondaryButton:hover,
@@ -486,6 +447,7 @@
   aspect-ratio: 1;
   max-height: 58vh;
   margin: 0 auto;
+  overflow: clip;
 }
 
 .ship {
@@ -594,6 +556,7 @@
   font-weight: 900;
   text-shadow: 0 0.1rem 0.15rem rgba(0, 0, 0, 0.35);
   box-shadow: 0 0.7rem 1.2rem rgba(23, 32, 51, 0.18);
+  touch-action: manipulation;
   animation: wobble 2.6s ease-in-out infinite;
 }
 
@@ -624,7 +587,7 @@
 
 .meteor span {
   position: relative;
-  z-index: 1;
+  z-index: 4;
 }
 
 .wrongMeteor {
@@ -636,23 +599,94 @@
 }
 
 .crackedMeteor {
-  scale: 0.88;
+  scale: 0.84;
   opacity: 0.88;
   filter: saturate(0.82);
+  border-color: #8994a3;
+  box-shadow:
+    inset -0.35rem -0.2rem 0 rgba(41, 48, 57, 0.18),
+    0 0.7rem 1.2rem rgba(23, 32, 51, 0.18);
 }
 
-.crackedMeteor i {
+.crackedMeteor::after {
+  position: absolute;
+  right: -4%;
+  top: 18%;
+  width: 24%;
+  height: 20%;
+  content: "";
+  border-radius: 62% 38% 58% 42%;
+  background: #172033;
+  opacity: 0.28;
+}
+
+.crackedMeteor .crackLine {
+  display: block;
+}
+
+.crackLine {
   position: absolute;
   z-index: 2;
-  inset: 18% 28% 18% 44%;
+  left: 50%;
+  top: 56%;
+  display: none;
+  width: 0.22rem;
+  height: 72%;
+  border-radius: 999px;
+  background: rgba(83, 94, 110, 0.78);
+  pointer-events: none;
+}
+
+.crackLineOne {
+  transform: translate(-50%, -50%) rotate(24deg);
+}
+
+.crackLineTwo {
+  height: 52%;
+  transform: translate(-145%, -38%) rotate(-34deg);
+}
+
+.crackLineThree {
+  height: 48%;
+  transform: translate(92%, -32%) rotate(48deg);
+}
+
+.crackPiece {
+  position: absolute;
+  z-index: 3;
   display: block;
-  width: 0.18rem;
-  content: "";
-  transform: rotate(18deg);
-  background: #384252;
-  box-shadow:
-    0.32rem 0.75rem 0 #384252,
-    -0.2rem 1.4rem 0 #384252;
+  border: 0.08rem solid #5f6875;
+  background:
+    radial-gradient(circle at 62% 32%, rgba(255, 255, 255, 0.3) 0 14%, transparent 15%),
+    linear-gradient(145deg, #9ba5b2 0%, #5f6875 100%);
+  pointer-events: none;
+}
+
+.crackPieceOne {
+  top: 3%;
+  right: 2%;
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 48% 52% 42% 58%;
+  transform: rotate(22deg);
+}
+
+.crackPieceTwo {
+  right: 9%;
+  bottom: -6%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 55% 45% 50% 50%;
+  transform: rotate(-18deg);
+}
+
+.crackPieceThree {
+  top: 8%;
+  left: 8%;
+  width: 10%;
+  aspect-ratio: 1;
+  border-radius: 42% 58% 55% 45%;
+  transform: rotate(38deg);
 }
 
 .goneMeteor {
@@ -663,7 +697,7 @@
 .explodingMeteor {
   visibility: visible;
   opacity: 1;
-  animation: meteorExplode 0.9s ease-out forwards;
+  animation: meteorCoreExplode 0.85s ease-out forwards;
   border-color: #facc15;
   background:
     radial-gradient(circle at 50% 50%, #ffffff 0 16%, #facc15 17% 36%, #f97316 37% 58%, transparent 60%);
@@ -675,6 +709,168 @@
 
 .explodingMeteor::before {
   display: none;
+}
+
+.explosionFlash {
+  position: absolute;
+  inset: -18%;
+  z-index: 7;
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0 18%, #facc15 19% 42%, rgba(249, 115, 22, 0.4) 43% 68%, transparent 69%);
+  animation: flashPop 0.72s ease-out forwards;
+  pointer-events: none;
+}
+
+.explosionOverlay {
+  position: absolute;
+  z-index: 8;
+  width: clamp(2.8rem, 13vw, 5.2rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.explosionRing {
+  position: absolute;
+  inset: -72%;
+  z-index: 7;
+  display: block;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #ffffff 0 9%, #facc15 10% 22%, #f97316 23% 36%, rgba(239, 68, 68, 0.45) 37% 50%, transparent 51%),
+    conic-gradient(from 18deg, transparent 0 8%, rgba(250, 204, 21, 0.9) 8% 14%, transparent 14% 22%, rgba(249, 115, 22, 0.9) 22% 30%, transparent 30% 42%, rgba(250, 204, 21, 0.8) 42% 49%, transparent 49% 64%, rgba(249, 115, 22, 0.9) 64% 72%, transparent 72% 100%);
+  filter: blur(0.02rem);
+  animation: fireRingPop 1.05s ease-out forwards;
+}
+
+.explosionOverlay .explosionShard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  width: 34%;
+  aspect-ratio: 1;
+  border: 0.07rem solid #5f6875;
+  border-radius: 44% 56% 50% 48%;
+  background:
+    radial-gradient(circle at 62% 32%, rgba(255, 255, 255, 0.38) 0 12%, transparent 13%),
+    linear-gradient(145deg, #aeb7c2 0%, #66717f 100%);
+  box-shadow:
+    0 0 0.5rem rgba(250, 204, 21, 0.42),
+    0 0.25rem 0.45rem rgba(23, 32, 51, 0.25);
+  transform: translate(-50%, -50%);
+  animation: shardFly 1.35s cubic-bezier(0.13, 0.72, 0.34, 1) forwards;
+}
+
+.explosionOrigin1 {
+  top: 4%;
+  left: 43%;
+}
+
+.explosionOrigin2 {
+  top: 10%;
+  right: 18%;
+}
+
+.explosionOrigin3 {
+  top: 30%;
+  right: 4%;
+}
+
+.explosionOrigin4 {
+  right: 5%;
+  bottom: 27%;
+}
+
+.explosionOrigin5 {
+  right: 24%;
+  bottom: 7%;
+}
+
+.explosionOrigin6 {
+  bottom: 4%;
+  left: 43%;
+}
+
+.explosionOrigin7 {
+  bottom: 7%;
+  left: 24%;
+}
+
+.explosionOrigin8 {
+  bottom: 27%;
+  left: 5%;
+}
+
+.explosionOrigin9 {
+  top: 30%;
+  left: 4%;
+}
+
+.explosionOrigin10 {
+  top: 10%;
+  left: 18%;
+}
+
+.explosionShard1 {
+  --shard-x: 0rem;
+  --shard-y: -22rem;
+  --shard-rotate: 420deg;
+}
+
+.explosionShard2 {
+  --shard-x: 14rem;
+  --shard-y: -18rem;
+  --shard-rotate: 520deg;
+}
+
+.explosionShard3 {
+  --shard-x: 22rem;
+  --shard-y: -5rem;
+  --shard-rotate: 390deg;
+}
+
+.explosionShard4 {
+  --shard-x: 20rem;
+  --shard-y: 12rem;
+  --shard-rotate: 610deg;
+}
+
+.explosionShard5 {
+  --shard-x: 8rem;
+  --shard-y: 22rem;
+  --shard-rotate: 480deg;
+}
+
+.explosionShard6 {
+  --shard-x: -9rem;
+  --shard-y: 20rem;
+  --shard-rotate: 530deg;
+}
+
+.explosionShard7 {
+  --shard-x: -20rem;
+  --shard-y: 10rem;
+  --shard-rotate: 410deg;
+}
+
+.explosionShard8 {
+  --shard-x: -22rem;
+  --shard-y: -5rem;
+  --shard-rotate: 570deg;
+}
+
+.explosionShard9 {
+  --shard-x: -14rem;
+  --shard-y: -18rem;
+  --shard-rotate: 440deg;
+}
+
+.explosionShard10 {
+  --shard-x: 5rem;
+  --shard-y: -24rem;
+  --shard-rotate: 650deg;
 }
 
 .wrongLabel {
@@ -921,6 +1117,7 @@
 .secondaryButton {
   padding: 0.85rem 1rem;
   font-weight: 850;
+  touch-action: manipulation;
 }
 
 .primaryButton {
@@ -1054,7 +1251,7 @@
   }
 }
 
-@keyframes meteorExplode {
+@keyframes meteorCoreExplode {
   0% {
     scale: 0.9;
     opacity: 1;
@@ -1068,6 +1265,62 @@
   100% {
     scale: 1.55;
     opacity: 0;
+  }
+}
+
+@keyframes flashPop {
+  0% {
+    opacity: 0;
+    scale: 0.2;
+  }
+
+  25% {
+    opacity: 1;
+    scale: 1.15;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+@keyframes fireRingPop {
+  0% {
+    opacity: 0;
+    scale: 0.2;
+    rotate: 0deg;
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 1.85;
+    rotate: 42deg;
+  }
+}
+
+@keyframes shardFly {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.55) rotate(0deg);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(
+        calc(-50% + var(--shard-x)),
+        calc(-50% + var(--shard-y))
+      )
+      scale(0.18)
+      rotate(var(--shard-rotate));
   }
 }
 
@@ -1136,10 +1389,6 @@
 
   .tableGrid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-column: 1 / -1;
-  }
-
-  .modeSelector {
     grid-column: 1 / -1;
   }
 
